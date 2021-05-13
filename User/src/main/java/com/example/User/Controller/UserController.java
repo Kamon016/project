@@ -33,7 +33,7 @@ public class UserController  {
     }
 
     @GetMapping("/readAllUsers")
-    public  ResponseEntity<Iterable<Users>> readAllUsers() {
+    public  ResponseEntity<Iterable> readAllUsers() {
         Iterable user = userRepository.findAll();
         log.info("Inside readAllUsers method of UserController");
         return ResponseEntity.ok().body(user);
@@ -41,8 +41,12 @@ public class UserController  {
 
     @GetMapping("/{id}")
     public ResponseEntity<ResponseTemplateVO> getUserWithDepartment(@PathVariable("id") Long userId){
-        log.info("Inside getUserWithDepartment method of UserController");
-        return ResponseEntity.ok().body(userService.getUserWithDepartment(userId));
+        try {
+            log.info("Inside getUserWithDepartment method of UserController");
+            return ResponseEntity.ok().body(userService.getUserWithDepartment(userId));
+        }catch(NullPointerException e){
+            return ResponseEntity.ok().body(userService.getUserWIthDepartment());
+        }
     }
 
     @PutMapping("/updateUser")

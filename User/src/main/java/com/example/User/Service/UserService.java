@@ -49,4 +49,10 @@ public class UserService {
         log.info("Inside getUserWithDepartment method of UserService");
         return vo;
     }
+
+    public ResponseTemplateVO getUserWIthDepartment(){
+        ResponseTemplateVO vo = new ResponseTemplateVO();
+        log.info("Inside getUserWithDepartment method of UserService");
+        return vo;
+    }
 }
