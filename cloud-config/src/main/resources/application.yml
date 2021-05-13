@@ -1,0 +1,12 @@
+server:
+  port: 8282
+
+spring:
+  application:
+    name: CONFIG-SERVER
+  cloud:
+    config:
+      server:
+        git:
+          clone-on-start: true
+          uri: https://github.com/Kamon016/config-server.git
