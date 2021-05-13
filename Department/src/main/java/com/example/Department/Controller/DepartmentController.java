@@ -13,7 +13,7 @@ import javax.inject.Inject;
 @RestController
 @RequestMapping("/departments")
 @Slf4j
-public class DepartmentConroller {
+public class DepartmentController {
 
     @Inject
     DepartmentRepository departmentRepository;
@@ -39,9 +39,14 @@ public class DepartmentConroller {
 
     @GetMapping("/{id}")
     public ResponseEntity<Department> readDepartment(@PathVariable("id") Long departmentId){
-        Department department = departmentService.findDepartmentById(departmentId);
-        log.info("Inside readDepartment method of DepartmentController");
-        return ResponseEntity.ok().body(department);
+        try {
+            Department department = departmentService.findDepartmentById(departmentId);
+            log.info("Inside readDepartment method of DepartmentController");
+            return ResponseEntity.ok().body(department);
+        }catch(NullPointerException e){
+            Department department = new Department();
+            return ResponseEntity.badRequest().body(department);
+        }
     }
 
     @PutMapping("/updateDepartment")

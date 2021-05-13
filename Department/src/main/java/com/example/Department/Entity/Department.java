@@ -17,6 +17,12 @@ public class Department {
     public Department() {
     }
 
+    public Department(Long departmentId, String name, String description) {
+        this.departmentId = departmentId;
+        this.name = name;
+        this.description = description;
+    }
+
     public Long getDepartmentId() {
         return departmentId;
     }
