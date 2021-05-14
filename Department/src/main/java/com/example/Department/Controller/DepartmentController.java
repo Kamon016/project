@@ -38,7 +38,7 @@ public class DepartmentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Department> readDepartment(@PathVariable("id") Long departmentId){
+    public ResponseEntity<Department> getDepartmentById(@PathVariable("id") Long departmentId){
         try {
             Department department = departmentService.findDepartmentById(departmentId);
             log.info("Inside readDepartment method of DepartmentController");
