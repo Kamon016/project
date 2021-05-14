@@ -69,9 +69,9 @@ public class DepartmentController {
     }
 
     @DeleteMapping("/deleteDepartment")
-    public ResponseEntity<?> deleteDepartment(@RequestParam Long id){
+    public ResponseEntity<?> deleteDepartment(@RequestParam Long departmentId){
         try{
-            departmentService.deleteDepartmentById(id);
+            departmentService.deleteDepartmentById(departmentId);
             log.info("Inside deleteDepartment method of DepartmentController");
             return ResponseEntity.ok().body("200, Success");
         }catch(EmptyResultDataAccessException e){
