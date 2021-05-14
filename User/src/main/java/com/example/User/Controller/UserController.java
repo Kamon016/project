@@ -52,12 +52,14 @@ public class UserController  {
     @PutMapping("/updateUser")
     public ResponseEntity<String> updateUser(@RequestParam Long userId,
                                              @RequestParam String name,
-                                             @RequestParam String email){
+                                             @RequestParam String email,
+                                             @RequestParam Long departmentId){
         try {
             Users user = userService.findUserById(userId);
             user.setUserId(userId);
             user.setName(name);
             user.setEmail(email);
+            user.setDepartmentId(departmentId);
             userService.saveUser(user);
             log.info("Inside updateUser method of UserController");
             return ResponseEntity.ok().body("201, Success");
