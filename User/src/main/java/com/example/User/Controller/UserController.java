@@ -4,6 +4,7 @@ import com.example.User.Entity.Users;
 import com.example.User.Repository.UserRepository;
 import com.example.User.Service.UserService;
 import com.example.User.VO.ResponseTemplateVO;
+import com.example.User.models.UserDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,7 @@ import javax.inject.Inject;
 @RestController
 @RequestMapping("/users")
 @Slf4j
-public class UserController  {
+public class UserController {
 
     @Inject
     private UserService userService;
@@ -22,29 +23,25 @@ public class UserController  {
     private UserRepository userRepository;
 
     @PostMapping("/addUser")
-    public ResponseEntity<Users> addNewUsers(@RequestParam String name, @RequestParam String email, @RequestParam Long departmentId){
-        Users users = new Users();
-        users.setName(name);
-        users.setEmail(email);
-        users.setDepartmentId(departmentId);
-        userService.saveUser(users);
+    public ResponseEntity<Users> addNewUsers( @RequestBody UserDto userDto) {
+        Users users = userService.saveUser(userDto);
         log.info("Inside addNewUsers method of UserController");
-        return ResponseEntity.ok().header("201").body(users);
+        return ResponseEntity.ok(users);
     }
 
     @GetMapping("/readAllUsers")
-    public  ResponseEntity<Iterable> readAllUsers() {
+    public ResponseEntity<Iterable> readAllUsers() {
         Iterable user = userRepository.findAll();
         log.info("Inside readAllUsers method of UserController");
         return ResponseEntity.ok().body(user);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseTemplateVO> getUserWithDepartment(@PathVariable("id") Long userId){
+    public ResponseEntity<ResponseTemplateVO> getUserWithDepartment(@PathVariable("id") Long userId) {
         try {
             log.info("Inside getUserWithDepartment method of UserController");
             return ResponseEntity.ok().body(userService.getUserWithDepartment(userId));
-        }catch(NullPointerException e){
+        } catch (NullPointerException e) {
             return ResponseEntity.ok().body(userService.getUserWIthDepartment());
         }
     }
@@ -53,7 +50,7 @@ public class UserController  {
     public ResponseEntity<String> updateUser(@RequestParam Long userId,
                                              @RequestParam String name,
                                              @RequestParam String email,
-                                             @RequestParam Long departmentId){
+                                             @RequestParam Long departmentId) {
         try {
             Users user = userService.findUserById(userId);
             user.setUserId(userId);
@@ -63,24 +60,18 @@ public class UserController  {
             userService.saveUser(user);
             log.info("Inside updateUser method of UserController");
             return ResponseEntity.ok().body("201, Success");
-        }catch(NullPointerException e){
+        } catch (NullPointerException e) {
             return ResponseEntity.badRequest().body("User not found");
-        }catch(Error e ){
+        } catch (Error e) {
             return ResponseEntity.badRequest().body("Error");
         }
     }
 
     @DeleteMapping("/deleteUser")
-    public ResponseEntity<?> deleteUser(@RequestParam Long userId){
-        try{
+    public ResponseEntity<?> deleteUser(@RequestParam Long userId) {
             userService.deleteUserById(userId);
             log.info("Inside deleteUser method of UserController");
             return ResponseEntity.ok().body("200, Success");
-        }catch(EmptyResultDataAccessException e){
-            return ResponseEntity.badRequest().body("User not found");
-        }catch(Exception e){
-            return ResponseEntity.badRequest().body("Error");
-        }
     }
 
 }
