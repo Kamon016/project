@@ -21,6 +21,8 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    private DepartmentProxyService departmentProxyService;
 
     public Users saveUser(UserDto userDto) {
 
@@ -35,12 +37,23 @@ public class UserService {
 
     }
 
-    private void validate(UserDto userDto) {
-        if (StringUtils.isEmpty(userDto.getName())) {
-            throw new RuntimeException("name is empty!");
+    public Users updateUser(UserDto userDto){
+
+        if (userDto.getUserId()==null){
+            throw new RuntimeException("userID is null");
         }
+        validate(userDto);
+        Optional<Users> byId = userRepository.findById(userDto.getUserId());
+        if (byId.isEmpty()) {
+            throw new RuntimeException("user not found!");
+        }
+        Users users = userRepository.findByUserId(userDto.getUserId());
+        users.setDepartmentId(userDto.getDepartmentId());
+        users.setName(userDto.getName());
+        users.setEmail(userDto.getEmail());
 
-
+        log.info("Inside updateUser method of UserService");
+        return userRepository.save(users);
     }
 
     public void deleteUserById(Long userId) {
@@ -58,27 +71,51 @@ public class UserService {
 
     }
 
+    private void validate(UserDto userDto) {
+        if (StringUtils.isEmpty(userDto.getName())) {
+            throw new RuntimeException("name is empty!");
+        }
+        if (StringUtils.isEmpty(userDto.getEmail())) {
+            throw new RuntimeException("email is empty!");
+        }
+        if (StringUtils.isEmpty(userDto.getDepartmentId())) {
+            throw new RuntimeException("department is empty!");
+        }
+    }
+
+
     public Users findUserById(Long userId) {
 
+        Users user = findUserById(userId);
         log.info("Inside findUserById method of UserService");
-        return userRepository.findByUserId(userId);
+        return user;
 
     }
 
     public ResponseTemplateVO getUserWithDepartment(Long userId) {
+        if(userId == null){
+            throw new RuntimeException("userId is null");
+        }
+        Optional<Users> byId = userRepository.findById(userId);
+        if (byId.isEmpty()) {
+            throw new RuntimeException("user not found!");
+        }
         ResponseTemplateVO vo = new ResponseTemplateVO();
         Users users = userRepository.findByUserId(userId);
-        Department department =
-                restTemplate.getForObject("http://DEPARTMENT-SERVICE/departments/" + users.getDepartmentId(), Department.class);
+        Department department = departmentProxyService.getDepartment(users.getDepartmentId());
         vo.setUsers(users);
         vo.setDepartment(department);
         log.info("Inside getUserWithDepartment method of UserService");
         return vo;
     }
 
+    /*
+    Пока что в сомнениях как правильно сделать
+
     public ResponseTemplateVO getUserWIthDepartment() {
         ResponseTemplateVO vo = new ResponseTemplateVO();
         log.info("Inside getUserWithDepartment method of UserService");
         return vo;
     }
+     */
 }

@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.HashMap;
 import java.util.Map;
-
 @RestControllerAdvice
 public class ExceptionTranslator {
+
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, String>> badRequestHandleException(Exception e) {
@@ -19,3 +19,4 @@ public class ExceptionTranslator {
     }
 
 }
+
