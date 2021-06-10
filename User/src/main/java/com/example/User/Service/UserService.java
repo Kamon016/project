@@ -81,14 +81,24 @@ public class UserService {
         if (StringUtils.isEmpty(userDto.getDepartmentId())) {
             throw new RuntimeException("department is empty!");
         }
+        Department department = departmentProxyService.getDepartmentWithUser(userDto.getDepartmentId());
+        Department CheckDepartment = new Department();
+        if(department.equals(CheckDepartment)){
+            throw new RuntimeException("department not found!");
+        }
     }
 
 
     public Users findUserById(Long userId) {
-
-        Users user = findUserById(userId);
+        if(userId == null){
+            throw new RuntimeException("userId is null");
+        }
+        Optional<Users> byId = userRepository.findById(userId);
+        if (byId.isEmpty()) {
+            throw new RuntimeException("user not found!");
+        }
         log.info("Inside findUserById method of UserService");
-        return user;
+        return userRepository.findByUserId(userId);
 
     }
 
@@ -102,7 +112,12 @@ public class UserService {
         }
         ResponseTemplateVO vo = new ResponseTemplateVO();
         Users users = userRepository.findByUserId(userId);
-        Department department = departmentProxyService.getDepartment(users.getDepartmentId());
+        Long departmentId = users.getDepartmentId();
+        Department department = departmentProxyService.getDepartmentWithUser(departmentId);
+        Department CheckDepartment = new Department();
+        if(department.equals(CheckDepartment)){
+            throw new RuntimeException("department not found!");
+        }
         vo.setUsers(users);
         vo.setDepartment(department);
         log.info("Inside getUserWithDepartment method of UserService");
