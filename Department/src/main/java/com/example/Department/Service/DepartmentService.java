@@ -18,6 +18,7 @@ public class DepartmentService {
     DepartmentRepository departmentRepository;
 
     public Department saveDepartment(DepartmentDto departmentDto){
+
         validate(departmentDto);
         Department department = new Department();
         department.setDescription(departmentDto.getDescription());
@@ -28,16 +29,28 @@ public class DepartmentService {
 
     public void deleteDepartmentById(Long departmentId){
 
+        if(departmentId == null){
+            throw new RuntimeException("departmentId is null");
+        }
+        Optional<Department> byId = departmentRepository.findById(departmentId);
+        if (byId.isEmpty()) {
+            throw new RuntimeException("department not found!");
+        }
         log.info("Inside deleteDepartmentById method of DepartmentService");
         departmentRepository.deleteById(departmentId);
-
     }
 
     public Department findDepartmentById(Long departmentId) {
 
+        if(departmentId == null){
+            throw new RuntimeException("departmentId is null");
+        }
+        Optional<Department> byId = departmentRepository.findById(departmentId);
+        if (byId.isEmpty()) {
+            throw new RuntimeException("department not found!");
+        }
         log.info("Inside findDepartmentById method of DepartmentService");
         return departmentRepository.findByDepartmentId(departmentId);
-
     }
 
     public Department updateDepartment(DepartmentDto departmentDto){
@@ -66,6 +79,18 @@ public class DepartmentService {
         if (StringUtils.isEmpty(departmentDto.getDescription())) {
             throw new RuntimeException("description is empty!");
         }
+    }
+
+    public Department getDepartmentWithUser(Long departmentId){
+
+        if (departmentId == null){
+            return new Department();
+        }
+        Optional<Department> byId = departmentRepository.findById(departmentId);
+        if (byId.isEmpty()) {
+            return new Department();
+        }
+        return departmentRepository.findByDepartmentId(departmentId);
     }
 
 }

@@ -43,7 +43,7 @@ public class DepartmentController {
     public ResponseEntity<Department> getDepartmentById(@PathVariable("id") Long departmentId){
 
             Department department = departmentService.findDepartmentById(departmentId);
-            log.info("Inside readDepartment method of DepartmentController");
+            log.info("Inside getDepartmentById method of DepartmentController");
             return ResponseEntity.ok().body(department);
 
     }
@@ -66,10 +66,11 @@ public class DepartmentController {
 
     }
 
-    @PostMapping("/getDepartment")
-    public Department getDepartment(Long departmentId){
-        Department department = departmentService.findDepartmentById(departmentId);
-        log.info("InsideGetDepartmentById in DeparmtnetController");
-        return department;
+    @GetMapping("/getDepartmentWithUser/{departmentId}")
+    public ResponseEntity<Department> getDepartmentWithUser(@PathVariable("departmentId") Long departmentId){
+
+        Department department = departmentService.getDepartmentWithUser(departmentId);
+        log.info("Inside getDepartmentWithUser method of DepartmentController");
+        return ResponseEntity.ok(department);
     }
 }
