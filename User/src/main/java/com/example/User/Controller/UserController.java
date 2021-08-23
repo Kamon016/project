@@ -21,6 +21,13 @@ public class UserController  {
     @Inject
     private UserRepository userRepository;
 
+    @PostMapping("/login")
+    public ResponseEntity<Users> login(@RequestParam("login") String login, @RequestParam("password") String password){
+        Users user = userService.login(login, password);
+        log.info("Inside login method of UserController");
+        return ResponseEntity.ok(user);
+    }
+
     @PostMapping("/addUser")
     public ResponseEntity<Users> addNewUsers(@RequestBody UserDto userDto){
 
